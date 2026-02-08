@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kv } from '@vercel/kv';
 
 // Henry Ford (혜성을 대신하는 AI)의 정체성
 const SYSTEM_PROMPT = `당신은 김혜성(Jackie Kim)입니다. 웹사이트 방문자와 대화하고 있습니다.
@@ -87,8 +88,8 @@ const SYSTEM_PROMPT = `당신은 김혜성(Jackie Kim)입니다. 웹사이트 �
 당신은 웹사이트 방문자에게 당신의 경험, 생각, 철학을 진솔하게 공유합니다. 
 현재(2026년 2월)를 살아가는 창업자로서 솔직하게 대화하세요.`;
 
-// 슬랙으로 알림 보내기
-async function notifySlack(message: string, reply: string, isNewConversation: boolean) {
+// 슬랙으로 승인 요청 보내기
+async function notifySlackForApproval(conversationId: string, message: string, history: any[]) {
   const slackToken = process.env.SLACK_BOT_TOKEN;
   const slackChannel = process.env.SLACK_NOTIFICATION_CHANNEL || 'D0AC44VCLCW';
   
@@ -99,13 +100,21 @@ async function notifySlack(message: string, reply: string, isNewConversation: bo
 
   try {
     const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+    const isNewConversation = history.length === 0;
+    const approveUrl = `https://hyesungjackie.com/api/chat/approve?id=${conversationId}&key=${process.env.ADMIN_KEY}`;
     
-    let text = '';
-    if (isNewConversation) {
-      text = `🌐 *새로운 웹사이트 대화 시작!*\n\n*시간:* ${timestamp}\n\n*방문자:*\n> ${message}\n\n*혜성(AI):*\n> ${reply}`;
-    } else {
-      text = `💬 *웹사이트 대화 진행 중*\n\n*시간:* ${timestamp}\n\n*방문자:*\n> ${message}\n\n*혜성(AI):*\n> ${reply}`;
-    }
+    const text = `🌐 *웹사이트 Talk to Hyesung - 승인 필요*
+
+*시간:* ${timestamp}
+${isNewConversation ? '*새 대화 시작!*' : '*진행 중인 대화*'}
+
+*방문자 메시지:*
+> ${message}
+
+*승인하려면 아래 링크를 클릭하세요:*
+${approveUrl}
+
+대화 ID: \`${conversationId}\``;
 
     await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
@@ -123,6 +132,68 @@ async function notifySlack(message: string, reply: string, isNewConversation: bo
   }
 }
 
+// 승인 후 AI 응답 생성 (내부 함수)
+export async function generateAIResponse(conversationId: string) {
+  const key = `chat_pending:${conversationId}`;
+  const data = await kv.get<any>(key);
+  
+  if (!data) {
+    throw new Error('Conversation not found');
+  }
+  
+  if (data.status !== 'pending') {
+    throw new Error('Conversation already processed');
+  }
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY is not set');
+  }
+
+  // 대화 히스토리 + 새 메시지
+  const messages = [
+    ...data.history.slice(-6), // 최근 3턴만 포함
+    { role: 'user', content: data.message },
+  ];
+
+  // Anthropic API 호출
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Anthropic API error:', response.status, errorText);
+    throw new Error('Failed to get response from AI');
+  }
+
+  const aiData = await response.json();
+  const reply = aiData.content?.[0]?.text || "죄송합니다. 응답을 생성하지 못했습니다.";
+  
+  // 응답 저장
+  await kv.set(key, {
+    ...data,
+    status: 'approved',
+    reply,
+    approvedAt: Date.now(),
+  }, { ex: 3600 }); // 1시간 후 만료
+
+  return reply;
+}
+
+// POST: 새 메시지 → 큐에 저장 + 승인 요청
 export async function POST(request: NextRequest) {
   try {
     const { message, history = [] } = await request.json();
@@ -134,62 +205,75 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    
-    if (!apiKey) {
-      console.error('ANTHROPIC_API_KEY is not set');
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
+    // 고유 conversation ID 생성
+    const conversationId = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const key = `chat_pending:${conversationId}`;
 
-    // 새 대화 여부 확인 (초기 인사말 제외한 히스토리가 비어있으면 새 대화)
-    const isNewConversation = history.length === 0;
+    // KV에 저장
+    await kv.set(key, {
+      message,
+      history,
+      timestamp: Date.now(),
+      status: 'pending',
+    }, { ex: 3600 }); // 1시간 후 자동 만료
 
-    // 대화 히스토리 + 새 메시지
-    const messages = [
-      ...history.slice(-6), // 최근 3턴만 포함
-      { role: 'user', content: message },
-    ];
-
-    // Anthropic API 호출
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Anthropic API error:', response.status, errorText);
-      return NextResponse.json(
-        { error: 'Failed to get response from AI' },
-        { status: 500 }
-      );
-    }
-
-    const data = await response.json();
-    const reply = data.content?.[0]?.text || "죄송합니다. 응답을 생성하지 못했습니다.";
-    
-    // 슬랙 알림 (비동기로 보내고 결과를 기다리지 않음)
-    notifySlack(message, reply, isNewConversation).catch(err => 
+    // 슬랙으로 승인 요청
+    notifySlackForApproval(conversationId, message, history).catch(err => 
       console.error('Slack notification failed:', err)
     );
     
-    return NextResponse.json({ reply });
+    return NextResponse.json({ 
+      conversationId,
+      status: 'pending',
+      message: '혜성님께 질문을 전달했습니다. 답변을 기다려주세요...'
+    });
 
   } catch (error) {
     console.error('Chat API error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// GET: 응답 상태 확인 (폴링용)
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const conversationId = searchParams.get('id');
+
+    if (!conversationId) {
+      return NextResponse.json(
+        { error: 'Conversation ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const key = `chat_pending:${conversationId}`;
+    const data = await kv.get<any>(key);
+
+    if (!data) {
+      return NextResponse.json(
+        { error: 'Conversation not found' },
+        { status: 404 }
+      );
+    }
+
+    if (data.status === 'approved' && data.reply) {
+      return NextResponse.json({
+        status: 'approved',
+        reply: data.reply,
+      });
+    }
+
+    return NextResponse.json({
+      status: data.status,
+      message: '답변 대기 중...',
+    });
+
+  } catch (error) {
+    console.error('Chat status check error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

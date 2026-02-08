@@ -655,7 +655,7 @@ function HomeContent() {
                         content: msg.content,
                       }));
 
-                      // 실제 AI 응답 받기
+                      // 승인 대기 큐에 메시지 추가
                       const response = await fetch('/api/chat', {
                         method: 'POST',
                         headers: {
@@ -668,16 +668,57 @@ function HomeContent() {
                       });
 
                       if (!response.ok) {
-                        throw new Error('Failed to get response');
+                        throw new Error('Failed to send message');
                       }
 
                       const data = await response.json();
+                      const conversationId = data.conversationId;
                       
-                      setIsTyping(false);
+                      // 대기 메시지 표시
                       setChatMessages(prev => [...prev, { 
                         role: 'hyesung', 
-                        content: data.reply 
+                        content: '혜성님께 질문을 전달했습니다. 답변을 기다려주세요...' 
                       }]);
+                      
+                      // 폴링 시작 (5초마다 상태 확인)
+                      const pollInterval = setInterval(async () => {
+                        try {
+                          const statusResponse = await fetch(`/api/chat?id=${conversationId}`);
+                          
+                          if (!statusResponse.ok) {
+                            clearInterval(pollInterval);
+                            throw new Error('Failed to check status');
+                          }
+
+                          const statusData = await statusResponse.json();
+                          
+                          if (statusData.status === 'approved' && statusData.reply) {
+                            // 승인됨! 답변 표시
+                            clearInterval(pollInterval);
+                            setIsTyping(false);
+                            setChatMessages(prev => {
+                              // 마지막 "대기 중..." 메시지 제거하고 실제 답변으로 교체
+                              const newMessages = [...prev];
+                              newMessages[newMessages.length - 1] = {
+                                role: 'hyesung',
+                                content: statusData.reply
+                              };
+                              return newMessages;
+                            });
+                          }
+                        } catch (pollError) {
+                          console.error('Polling error:', pollError);
+                          clearInterval(pollInterval);
+                          setIsTyping(false);
+                        }
+                      }, 5000); // 5초마다 체크
+                      
+                      // 5분 후 타임아웃
+                      setTimeout(() => {
+                        clearInterval(pollInterval);
+                        setIsTyping(false);
+                      }, 300000);
+                      
                     } catch (error) {
                       console.error('Chat error:', error);
                       setIsTyping(false);
