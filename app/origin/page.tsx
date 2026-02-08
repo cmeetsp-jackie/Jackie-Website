@@ -606,61 +606,73 @@ export default function OriginPage() {
                         <p className="text-amber-600 text-sm font-medium mb-2 tracking-wider">{event.period}</p>
                         
                         {/* 카드 */}
-                        <div className="bg-white/80 rounded-xl p-5 md:p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                          <div className="flex items-start gap-4">
-                            {/* 로고 */}
-                            {event.logo && (
-                              <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-100">
-                                <img 
-                                  src={event.logo} 
-                                  alt={event.title}
-                                  className="w-full h-full object-contain p-1"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).style.display = 'none';
-                                  }}
-                                />
-                              </div>
-                            )}
-                            
-                            {/* 내용 */}
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-lg md:text-xl font-light text-gray-800 mb-1">{event.title}</h4>
-                              <p className="text-gray-500 text-sm mb-1">{event.role}</p>
-                              {event.subtitle && (
-                                <p className="text-amber-600 text-xs mb-3">{event.subtitle}</p>
-                              )}
-                              
-                              {/* 하이라이트 */}
-                              {event.highlights && event.highlights.length > 0 && (
-                                <div className="space-y-1 mt-3">
-                                  {event.highlights.map((highlight, hIndex) => (
-                                    <p key={hIndex} className="text-gray-600 text-sm">
-                                      {highlight.link ? (
-                                        <a 
-                                          href={highlight.link} 
-                                          target="_blank" 
-                                          rel="noopener noreferrer"
-                                          className="hover:text-amber-600 hover:underline transition-colors"
-                                        >
-                                          {highlight.text}
-                                        </a>
-                                      ) : (
-                                        highlight.text
-                                      )}
-                                    </p>
-                                  ))}
+                        <div className="bg-white/80 rounded-xl p-4 md:p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                          {/* 모바일: 세로 레이아웃, 데스크탑: 가로 레이아웃 */}
+                          <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4">
+                            {/* 로고 + 제목 영역 */}
+                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                              {/* 로고 */}
+                              {event.logo && (
+                                <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-100">
+                                  <img 
+                                    src={event.logo} 
+                                    alt={event.title}
+                                    className="w-full h-full object-contain p-1"
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                  />
                                 </div>
                               )}
+                              
+                              {/* 내용 */}
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-base md:text-xl font-light text-gray-800 mb-0.5 md:mb-1">{event.title}</h4>
+                                <p className="text-gray-500 text-xs md:text-sm mb-0.5 md:mb-1">{event.role}</p>
+                                {event.subtitle && (
+                                  <p className="text-amber-600 text-xs mb-2 md:mb-3">{event.subtitle}</p>
+                                )}
+                              </div>
                             </div>
                             
-                            {/* View Memory 버튼 */}
+                            {/* View Memory 버튼 - 모바일에서는 숨김 */}
                             <button
                               onClick={() => setViewingMemory(event.id)}
-                              className="flex-shrink-0 px-3 py-1.5 text-xs tracking-wider uppercase text-gray-400 hover:text-amber-600 border border-gray-200 hover:border-amber-300 rounded-full transition-colors"
+                              className="hidden md:block flex-shrink-0 px-3 py-1.5 text-xs tracking-wider uppercase text-gray-400 hover:text-amber-600 border border-gray-200 hover:border-amber-300 rounded-full transition-colors"
                             >
                               View Memory
                             </button>
                           </div>
+                          
+                          {/* 하이라이트 */}
+                          {event.highlights && event.highlights.length > 0 && (
+                            <div className="space-y-1 mt-3 pl-0 md:pl-[4.5rem]">
+                              {event.highlights.map((highlight, hIndex) => (
+                                <p key={hIndex} className="text-gray-600 text-xs md:text-sm">
+                                  {highlight.link ? (
+                                    <a 
+                                      href={highlight.link} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="hover:text-amber-600 hover:underline transition-colors"
+                                    >
+                                      {highlight.text}
+                                    </a>
+                                  ) : (
+                                    highlight.text
+                                  )}
+                                </p>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {/* View Memory 버튼 - 모바일에서만 보임 */}
+                          <button
+                            onClick={() => setViewingMemory(event.id)}
+                            className="md:hidden mt-3 w-full px-3 py-2 text-xs tracking-wider uppercase text-gray-400 hover:text-amber-600 border border-gray-200 hover:border-amber-300 rounded-full transition-colors text-center"
+                          >
+                            View Memory
+                          </button>
                         </div>
                       </motion.div>
                     ))}
