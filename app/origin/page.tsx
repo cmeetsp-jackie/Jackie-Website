@@ -200,41 +200,37 @@ export default function OriginPage() {
             </p>
           </motion.div>
 
-          {/* 섹션 그리드 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            {sections.map((section, index) => (
+          {/* 섹션 아코디언 */}
+          <div className="space-y-4 mb-16">
+            {/* Family Foundation */}
+            <div>
               <motion.button
-                key={section.id}
-                onClick={() => setActiveSection(activeSection === section.id ? null : section.id)}
-                className={`group relative bg-white/70 hover:bg-white border rounded-xl p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
-                  activeSection === section.id ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200 hover:border-amber-300'
+                onClick={() => setActiveSection(activeSection === 'family' ? null : 'family')}
+                className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
+                  activeSection === 'family' ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200 hover:border-amber-300'
                 }`}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
               >
                 <div className="flex items-start justify-between">
-                  <div>
-                    <span className="text-3xl mb-4 block">{section.icon}</span>
-                    <h3 className="text-gray-800 text-xl md:text-2xl font-light mb-2 group-hover:text-amber-600 transition-colors">
-                      {section.korean}
-                    </h3>
-                    <p className="text-gray-400 text-sm tracking-wider">
-                      {section.english}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">👨‍👩‍👧‍👦</span>
+                    <div>
+                      <h3 className="text-gray-800 text-lg md:text-2xl font-light group-hover:text-amber-600 transition-colors">
+                        Family Foundation
+                      </h3>
+                      <p className="text-gray-400 text-xs md:text-sm tracking-wider">가족 기반</p>
+                    </div>
                   </div>
-                  <div className={`transition-transform duration-300 ${activeSection === section.id ? 'rotate-180' : ''}`}>
+                  <div className={`transition-transform duration-300 ${activeSection === 'family' ? 'rotate-180' : ''}`}>
                     <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
                 </div>
               </motion.button>
-            ))}
-          </div>
-
-          {/* 확장된 섹션 콘텐츠 */}
-          <AnimatePresence>
+              <AnimatePresence>
             {activeSection === 'family' && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -330,8 +326,39 @@ export default function OriginPage() {
                 </div>
               </motion.div>
             )}
+            </AnimatePresence>
+            </div>
 
-            {activeSection === 'interest' && (
+            {/* Interest & Thoughts */}
+            <div>
+              <motion.button
+                onClick={() => setActiveSection(activeSection === 'interest' ? null : 'interest')}
+                className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
+                  activeSection === 'interest' ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200 hover:border-amber-300'
+                }`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">🎯</span>
+                    <div>
+                      <h3 className="text-gray-800 text-lg md:text-2xl font-light group-hover:text-amber-600 transition-colors">
+                        관심사 & 취미 & 잡생각
+                      </h3>
+                      <p className="text-gray-400 text-xs md:text-sm tracking-wider">Interest & Thoughts</p>
+                    </div>
+                  </div>
+                  <div className={`transition-transform duration-300 ${activeSection === 'interest' ? 'rotate-180' : ''}`}>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </motion.button>
+              <AnimatePresence>
+              {activeSection === 'interest' && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -490,8 +517,39 @@ export default function OriginPage() {
                 )}
               </motion.div>
             )}
+            </AnimatePresence>
+            </div>
 
-            {activeSection === 'spiritual' && (
+            {/* Spiritual Compass */}
+            <div>
+              <motion.button
+                onClick={() => setActiveSection(activeSection === 'spiritual' ? null : 'spiritual')}
+                className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
+                  activeSection === 'spiritual' ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200 hover:border-amber-300'
+                }`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">🧭</span>
+                    <div>
+                      <h3 className="text-gray-800 text-lg md:text-2xl font-light group-hover:text-amber-600 transition-colors">
+                        Spiritual Compass
+                      </h3>
+                      <p className="text-gray-400 text-xs md:text-sm tracking-wider">영적 나침반</p>
+                    </div>
+                  </div>
+                  <div className={`transition-transform duration-300 ${activeSection === 'spiritual' ? 'rotate-180' : ''}`}>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </motion.button>
+              <AnimatePresence>
+              {activeSection === 'spiritual' && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -537,8 +595,39 @@ export default function OriginPage() {
                 </div>
               </motion.div>
             )}
+            </AnimatePresence>
+            </div>
 
-            {activeSection === 'journey' && (
+            {/* Life Journey */}
+            <div>
+              <motion.button
+                onClick={() => setActiveSection(activeSection === 'journey' ? null : 'journey')}
+                className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
+                  activeSection === 'journey' ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200 hover:border-amber-300'
+                }`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">📅</span>
+                    <div>
+                      <h3 className="text-gray-800 text-lg md:text-2xl font-light group-hover:text-amber-600 transition-colors">
+                        Life Journey
+                      </h3>
+                      <p className="text-gray-400 text-xs md:text-sm tracking-wider">인생 여정</p>
+                    </div>
+                  </div>
+                  <div className={`transition-transform duration-300 ${activeSection === 'journey' ? 'rotate-180' : ''}`}>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </motion.button>
+              <AnimatePresence>
+              {activeSection === 'journey' && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -680,7 +769,9 @@ export default function OriginPage() {
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>
+            </AnimatePresence>
+            </div>
+          </div>
 
         </div>
       </main>
