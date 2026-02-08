@@ -294,23 +294,26 @@ function HomeContent() {
                 >
                   <div className="relative w-52 h-52 md:w-72 md:h-72 mx-auto">
                     {/* 글로우 효과 */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-200 to-sky-200 blur-2xl opacity-60 animate-pulse" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-200 to-sky-200 blur-3xl opacity-40 animate-pulse" />
                     
-                    {/* 이미지 컨테이너 */}
-                    <div className="relative w-full h-full rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border-2 border-white shadow-2xl overflow-hidden">
+                    {/* 이미지 컨테이너 - Soft Vignette */}
+                    <div className="relative w-full h-full rounded-full overflow-hidden">
                       <img 
                         src="/profile.png" 
                         alt="Hyesung Kim"
                         className="w-full h-full object-cover object-top"
+                        style={{
+                          maskImage: 'radial-gradient(circle, black 50%, transparent 100%)',
+                          WebkitMaskImage: 'radial-gradient(circle, black 50%, transparent 100%)'
+                        }}
+                      />
+                      {/* Subtle inner shadow for depth */}
+                      <div className="absolute inset-0 rounded-full shadow-inner pointer-events-none" 
+                        style={{
+                          boxShadow: 'inset 0 0 60px rgba(0,0,0,0.1)'
+                        }}
                       />
                     </div>
-                    
-                    {/* 외곽 링 */}
-                    <motion.div 
-                      className="absolute -inset-3 rounded-full border border-amber-200/50"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                    />
                   </div>
                 </motion.div>
 
