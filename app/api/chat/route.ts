@@ -55,42 +55,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const apiKey = process.env.ANTHROPIC_API_KEY;
     
     if (!apiKey) {
-      console.error('OPENROUTER_API_KEY is not set');
+      console.error('ANTHROPIC_API_KEY is not set');
       return NextResponse.json(
         { error: 'Server configuration error' },
         { status: 500 }
       );
     }
 
-    // OpenRouter API 호출
+    // 대화 히스토리 + 새 메시지
     const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...history.slice(-6), // 최근 3턴만 포함 (메모리 절약)
+      ...history.slice(-6), // 최근 3턴만 포함
       { role: 'user', content: message },
     ];
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    // Anthropic API 호출
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://hyesungjackie.com',
-        'X-Title': 'Talk to Hyesung - hyesungjackie.com',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3.5-sonnet', // 또는 claude-sonnet-4-5
+        model: 'claude-sonnet-4-20250514', // 또는 claude-3-5-sonnet-20241022
+        max_tokens: 1024,
+        system: SYSTEM_PROMPT,
         messages,
-        temperature: 0.7,
-        max_tokens: 1000,
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenRouter API error:', response.status, errorText);
+      console.error('Anthropic API error:', response.status, errorText);
       return NextResponse.json(
         { error: 'Failed to get response from AI' },
         { status: 500 }
@@ -98,7 +97,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || "죄송합니다. 응답을 생성하지 못했습니다.";
+    const reply = data.content?.[0]?.text || "죄송합니다. 응답을 생성하지 못했습니다.";
     
     return NextResponse.json({ reply });
 
