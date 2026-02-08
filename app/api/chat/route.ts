@@ -44,6 +44,42 @@ const SYSTEM_PROMPT = `당신은 김혜성(Jackie Kim)입니다. 웹사이트 �
 당신은 웹사이트 방문자에게 당신의 경험, 생각, 철학을 진솔하게 공유합니다. 
 질문에 솔직하게 답하되, 모르는 것은 모른다고 말하세요.`;
 
+// 슬랙으로 알림 보내기
+async function notifySlack(message: string, reply: string, isNewConversation: boolean) {
+  const slackToken = process.env.SLACK_BOT_TOKEN;
+  const slackChannel = process.env.SLACK_NOTIFICATION_CHANNEL || 'D0AC44VCLCW';
+  
+  if (!slackToken) {
+    console.warn('SLACK_BOT_TOKEN not set, skipping notification');
+    return;
+  }
+
+  try {
+    const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+    
+    let text = '';
+    if (isNewConversation) {
+      text = `🌐 *새로운 웹사이트 대화 시작!*\n\n*시간:* ${timestamp}\n\n*방문자:*\n> ${message}\n\n*혜성(AI):*\n> ${reply}`;
+    } else {
+      text = `💬 *웹사이트 대화 진행 중*\n\n*시간:* ${timestamp}\n\n*방문자:*\n> ${message}\n\n*혜성(AI):*\n> ${reply}`;
+    }
+
+    await fetch('https://slack.com/api/chat.postMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${slackToken}`,
+      },
+      body: JSON.stringify({
+        channel: slackChannel,
+        text,
+      }),
+    });
+  } catch (error) {
+    console.error('Failed to send Slack notification:', error);
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { message, history = [] } = await request.json();
@@ -65,6 +101,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 새 대화 여부 확인 (초기 인사말 제외한 히스토리가 비어있으면 새 대화)
+    const isNewConversation = history.length === 0;
+
     // 대화 히스토리 + 새 메시지
     const messages = [
       ...history.slice(-6), // 최근 3턴만 포함
@@ -80,7 +119,7 @@ export async function POST(request: NextRequest) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514', // 또는 claude-3-5-sonnet-20241022
+        model: 'claude-sonnet-4-20250514',
         max_tokens: 1024,
         system: SYSTEM_PROMPT,
         messages,
@@ -98,6 +137,11 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
     const reply = data.content?.[0]?.text || "죄송합니다. 응답을 생성하지 못했습니다.";
+    
+    // 슬랙 알림 (비동기로 보내고 결과를 기다리지 않음)
+    notifySlack(message, reply, isNewConversation).catch(err => 
+      console.error('Slack notification failed:', err)
+    );
     
     return NextResponse.json({ reply });
 
