@@ -592,7 +592,7 @@ export default function OriginPage() {
                           <h6 className="font-semibold text-purple-800 mb-3 text-lg">
                             AI Native Action Principle #1: Build MVAA
                           </h6>
-                          <p className="text-sm text-gray-500 mb-2 italic">Most Valuable AI Asset</p>
+                          <p className="text-sm text-gray-500 mb-2 italic">Most Valuable AI Asst</p>
 
                           {/* MVAA 정의 */}
                           <div className="bg-white border-2 border-purple-300 rounded-lg p-4 mb-4">
