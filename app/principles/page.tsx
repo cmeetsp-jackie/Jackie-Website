@@ -71,8 +71,51 @@ export default function PrinciplesPage() {
   const [activeTab, setActiveTab] = useState<'values' | 'lessons'>('values');
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
   const [commentForm, setCommentForm] = useState({ name: '', comment: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
   const selectedLessonData = lessons.find(l => l.id === selectedLesson);
+
+  const handleCommentSubmit = async () => {
+    if (!commentForm.name.trim() || !commentForm.comment.trim()) {
+      setSubmitMessage('이름과 댓글을 모두 입력해주세요.');
+      return;
+    }
+
+    if (!selectedLessonData) return;
+
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+
+    try {
+      const response = await fetch('/api/comment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: commentForm.name,
+          comment: commentForm.comment,
+          lessonId: selectedLessonData.id,
+          lessonTitle: selectedLessonData.title,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitMessage(data.message || '댓글이 접수되었습니다!');
+        setCommentForm({ name: '', comment: '' });
+      } else {
+        setSubmitMessage(data.error || '댓글 전송에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Comment submission error:', error);
+      setSubmitMessage('댓글 전송에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-sky-50">
@@ -304,10 +347,25 @@ export default function PrinciplesPage() {
                         <p className="text-xs text-gray-400">
                           💡 실명으로 달아주셔야 답변드립니다
                         </p>
-                        <button className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors">
-                          등록
+                        <button 
+                          onClick={handleCommentSubmit}
+                          disabled={isSubmitting}
+                          className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isSubmitting ? '전송 중...' : '등록'}
                         </button>
                       </div>
+                      
+                      {/* Submit Message */}
+                      {submitMessage && (
+                        <div className={`mt-3 p-3 rounded-lg text-sm ${
+                          submitMessage.includes('실패') || submitMessage.includes('입력') 
+                            ? 'bg-red-50 text-red-600' 
+                            : 'bg-green-50 text-green-600'
+                        }`}>
+                          {submitMessage}
+                        </div>
+                      )}
                     </div>
 
                     {/* Comments List */}
