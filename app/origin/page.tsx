@@ -31,6 +31,13 @@ const lifeEvents = [
       '/memories/mineis/7.jpg',
       '/memories/mineis/8.jpg',
       '/memories/mineis/9.jpg',
+      '/memories/mineis/1000073025.jpg',
+      '/memories/mineis/1000074460.jpg',
+      '/memories/mineis/000011200002240713.jpg',
+      '/memories/mineis/스크린샷 2026-02-08 오후 10.29.08.png',
+      '/memories/mineis/스크린샷 2026-02-08 오후 10.29.23.png',
+      '/memories/mineis/IMG_3952.jpg',
+      '/memories/mineis/IMG_4771.jpg',
     ],
   },
   {
