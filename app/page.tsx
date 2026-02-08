@@ -196,7 +196,7 @@ function HomeContent() {
   return (
     <div className="min-h-screen">
       {/* ========== CINEMATIC HERO ========== */}
-      <section className="h-screen relative overflow-hidden bg-gradient-to-br from-amber-50 via-white to-sky-50">
+      <section className="h-dvh relative overflow-hidden bg-gradient-to-br from-amber-50 via-white to-sky-50">
         
         {/* 밝은 배경 그라데이션 */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-white/60" />
