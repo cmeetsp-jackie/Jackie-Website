@@ -897,7 +897,7 @@ export default function OriginPage() {
                             <div className="space-y-1 mt-3 pl-0 md:pl-[4.5rem]">
                               {event.highlights.map((highlight, hIndex) => (
                                 <p key={hIndex} className="text-gray-600 text-xs md:text-sm">
-                                  {highlight.link ? (
+                                  {'link' in highlight && highlight.link ? (
                                     <a 
                                       href={highlight.link} 
                                       target="_blank" 
