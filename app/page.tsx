@@ -652,13 +652,22 @@ function HomeContent() {
                     setIsTyping(true);
                     
                     try {
+                      // 대화 히스토리를 API 형식으로 변환
+                      const history = chatMessages.slice(1).map(msg => ({
+                        role: msg.role === 'hyesung' ? 'assistant' : 'user',
+                        content: msg.content,
+                      }));
+
                       // 실제 AI 응답 받기
                       const response = await fetch('/api/chat', {
                         method: 'POST',
                         headers: {
                           'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ message: userMessage }),
+                        body: JSON.stringify({ 
+                          message: userMessage,
+                          history,
+                        }),
                       });
 
                       if (!response.ok) {
