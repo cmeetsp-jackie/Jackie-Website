@@ -150,6 +150,13 @@ const projects = [
         '/memories/mineis/7.jpg',
         '/memories/mineis/8.jpg',
         '/memories/mineis/9.jpg',
+        '/memories/mineis/1000073025.jpg',
+        '/memories/mineis/1000074460.jpg',
+        '/memories/mineis/000011200002240713.jpg',
+        '/memories/mineis/스크린샷 2026-02-08 오후 10.29.08.png',
+        '/memories/mineis/스크린샷 2026-02-08 오후 10.29.23.png',
+        '/memories/mineis/IMG_3952.jpg',
+        '/memories/mineis/IMG_4771.jpg',
       ],
     },
   },
@@ -202,6 +209,7 @@ export default function WorkPage() {
   const router = useRouter();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [enlargedPhoto, setEnlargedPhoto] = useState<string | null>(null);
+  const [showMemories, setShowMemories] = useState(false);
 
   // 선택된 프로젝트 찾기
   const project = selectedProject ? projects.find(p => p.id === selectedProject) : null;
@@ -655,22 +663,41 @@ export default function WorkPage() {
                 {/* 사진들 */}
                 {project.details.memories && project.details.memories.length > 0 && (
                   <div>
-                    <h3 className="text-sm uppercase tracking-wider text-amber-600 mb-4">Memories</h3>
-                    <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                      {project.details.memories.map((photo, idx) => (
-                        <div 
-                          key={idx} 
-                          className="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
-                          onClick={() => setEnlargedPhoto(photo)}
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm uppercase tracking-wider text-amber-600">Memories</h3>
+                      <button
+                        onClick={() => setShowMemories(!showMemories)}
+                        className="text-xs text-gray-500 hover:text-amber-600 transition-colors flex items-center gap-2"
+                      >
+                        {showMemories ? '접기' : '펼치기'}
+                        <svg 
+                          className={`w-4 h-4 transition-transform ${showMemories ? 'rotate-180' : ''}`}
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
                         >
-                          <img 
-                            src={photo} 
-                            alt={`Memory ${idx + 1}`}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      ))}
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
                     </div>
+                    
+                    {showMemories && (
+                      <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                        {project.details.memories.map((photo, idx) => (
+                          <div 
+                            key={idx} 
+                            className="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
+                            onClick={() => setEnlargedPhoto(photo)}
+                          >
+                            <img 
+                              src={photo} 
+                              alt={`Memory ${idx + 1}`}
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
