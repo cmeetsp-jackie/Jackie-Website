@@ -85,9 +85,11 @@ export async function GET(request: NextRequest) {
       
       // 첫 번째 처리일 때만 슬랙 알림 (중복 방지)
       if (!alreadyProcessed) {
-        notifySlackAfterApproval(conversationId, reply, userMessage).catch(err =>
-          console.error('Slack notification failed:', err)
-        );
+        try {
+          await notifySlackAfterApproval(conversationId, reply, userMessage);
+        } catch (err) {
+          console.error('Slack notification failed:', err);
+        }
       }
 
       return new NextResponse(
