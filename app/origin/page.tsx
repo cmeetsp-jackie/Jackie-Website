@@ -592,7 +592,20 @@ export default function OriginPage() {
                           <h6 className="font-semibold text-purple-800 mb-3 text-lg">
                             AI Native Action Principle #1: Build MVAA
                           </h6>
-                          <p className="text-sm text-gray-500 mb-4 italic">Most Valuable AI Asset</p>
+                          <p className="text-sm text-gray-500 mb-2 italic">Most Valuable AI Asset</p>
+
+                          {/* MVAA 정의 */}
+                          <div className="bg-white border-2 border-purple-300 rounded-lg p-4 mb-4">
+                            <div className="flex items-start gap-2">
+                              <span className="text-xl">📖</span>
+                              <div>
+                                <p className="font-medium text-purple-900 mb-1 text-sm">MVAA란?</p>
+                                <p className="text-gray-800 text-sm leading-relaxed">
+                                  업무 비효율(반복적·매뉴얼 업무)을 AI로 개선한 모든 <strong className="text-purple-700">문제 해결 과정(Document)</strong>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
 
                           <div className="space-y-4">
                             {/* 원칙 */}
