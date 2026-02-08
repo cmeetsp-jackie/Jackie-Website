@@ -314,9 +314,9 @@ function HomeContent() {
                   </div>
                 </motion.div>
 
-                {/* 이름 - 모바일에서 배경 추가 */}
+                {/* 이름 */}
                 <motion.h1
-                  className="text-5xl md:text-8xl font-extralight tracking-[0.2em] text-gray-800 mb-2 px-4 py-2 md:px-0 md:py-0 bg-white/70 md:bg-transparent rounded-xl md:rounded-none backdrop-blur-sm md:backdrop-blur-none"
+                  className="text-5xl md:text-8xl font-extralight tracking-[0.2em] text-gray-800 mb-2"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.5 }}
@@ -326,7 +326,7 @@ function HomeContent() {
 
                 {/* 영어 이름 */}
                 <motion.p
-                  className="text-2xl md:text-3xl text-gray-500 font-extralight tracking-[0.15em] mb-6 px-4 py-1 md:px-0 md:py-0 bg-white/70 md:bg-transparent rounded-lg md:rounded-none backdrop-blur-sm md:backdrop-blur-none inline-block"
+                  className="text-2xl md:text-3xl text-gray-500 font-extralight tracking-[0.15em] mb-6"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.6 }}
@@ -336,7 +336,7 @@ function HomeContent() {
 
                 {/* 부제 */}
                 <motion.p
-                  className="text-lg md:text-xl text-gray-500 tracking-[0.3em] uppercase font-light mb-12 px-4 py-2 md:px-0 md:py-0 bg-white/70 md:bg-transparent rounded-lg md:rounded-none backdrop-blur-sm md:backdrop-blur-none"
+                  className="text-lg md:text-xl text-gray-500 tracking-[0.3em] uppercase font-light mb-12"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.8 }}
