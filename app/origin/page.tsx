@@ -980,13 +980,13 @@ export default function OriginPage() {
             exit={{ opacity: 0 }}
             onClick={() => setViewingMemory(null)}
           >
-            {/* 닫기 버튼 */}
+            {/* 닫기 버튼 - 더 잘 보이도록 개선 */}
             <button
               onClick={() => setViewingMemory(null)}
-              className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10"
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-black/70 hover:bg-black/90 rounded-full text-white transition-all z-10 backdrop-blur-sm"
             >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
@@ -1046,13 +1046,13 @@ export default function OriginPage() {
             exit={{ opacity: 0 }}
             onClick={() => setEnlargedPhoto(null)}
           >
-            {/* 닫기 버튼 */}
+            {/* 닫기 버튼 - 더 잘 보이도록 개선 */}
             <button
               onClick={() => setEnlargedPhoto(null)}
-              className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10"
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-black/70 hover:bg-black/90 rounded-full text-white transition-all z-10 backdrop-blur-sm"
             >
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
