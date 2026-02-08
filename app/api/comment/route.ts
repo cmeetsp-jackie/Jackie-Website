@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       name: name.trim(),
       comment: comment.trim(),
       timestamp: Date.now(),
-      approved: false, // 기본적으로 승인 대기 상태
+      approved: true, // 자동 승인
     };
 
     // Vercel KV에 댓글 저장
