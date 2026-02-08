@@ -95,49 +95,49 @@ const projects = [
           source: '패션비즈',
           date: '2026.01',
           url: 'https://fashionbiz.co.kr/article/222646',
-          thumbnail: '/press/fashionbiz.png',
+          domain: 'fashionbiz.co.kr',
         },
         {
           title: '시리즈 B 투자 유치 - Altos Ventures 리드',
           source: '플래텀',
           date: '2025.09',
           url: 'https://platum.kr/archives/270926',
-          thumbnail: '/press/platum.png',
+          domain: 'platum.kr',
         },
         {
           title: '누적 투자 330억원 돌파 - 차세대 유니콘 후보',
           source: '유니콘팩토리',
           date: '2025.03',
           url: 'https://www.unicornfactory.co.kr/article/2025030610183022727',
-          thumbnail: '/press/unicornfactory.png',
+          domain: 'unicornfactory.co.kr',
         },
         {
           title: '토스페이먼츠 파트너사 인터뷰',
           source: 'Toss Blog',
           date: '2025',
           url: 'https://pay.toss.im/blog/charan/',
-          thumbnail: '/press/toss.png',
+          domain: 'toss.im',
         },
         {
           title: '차란, 가입자 100만명 돌파',
           source: '서울경제',
           date: '2025.01',
           url: 'https://m.sedaily.com/article/14152859',
-          thumbnail: '/press/sedaily.png',
+          domain: 'sedaily.com',
         },
         {
           title: 'AI 기반 검수로 중고거래 신뢰도 향상',
           source: '조선일보',
           date: '2025.01',
           url: 'https://www.chosun.com/economy/smb-venture/2025/01/14/HR2TXVSLEJARXN5PECZI6SRKQY/',
-          thumbnail: '/press/chosun.png',
+          domain: 'chosun.com',
         },
         {
           title: '시리즈 A 투자 유치 - Hashed 리드',
           source: '플래텀',
           date: '2024.03',
           url: 'https://platum.kr/archives/252791',
-          thumbnail: '/press/platum.png',
+          domain: 'platum.kr',
         },
       ],
       memories: [
@@ -614,18 +614,18 @@ export default function WorkPage() {
                           className="group bg-white border border-gray-100 rounded-xl p-4 hover:border-amber-200 hover:shadow-lg transition-all duration-300"
                         >
                           <div className="flex gap-4">
-                            {/* 썸네일 */}
+                            {/* 썸네일 (Google Favicon API) */}
                             <div className="flex-shrink-0 w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center border border-gray-100">
                               <img 
-                                src={article.thumbnail}
+                                src={`https://www.google.com/s2/favicons?domain=${article.domain}&sz=128`}
                                 alt={article.source}
-                                className="w-full h-full object-contain p-2"
+                                className="w-12 h-12 object-contain"
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   target.style.display = 'none';
                                   const parent = target.parentElement;
                                   if (parent) {
-                                    parent.innerHTML = `<span class="text-gray-400 text-xs font-medium">${article.source}</span>`;
+                                    parent.innerHTML = `<span class="text-gray-400 text-xs font-medium text-center">${article.source}</span>`;
                                   }
                                 }}
                               />
