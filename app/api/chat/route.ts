@@ -141,9 +141,20 @@ export async function generateAIResponse(conversationId: string) {
     throw new Error('Conversation not found');
   }
   
+  // 이미 처리된 경우 저장된 답변 반환 (중복 방지)
+  if (data.status === 'approved' && data.reply) {
+    return { reply: data.reply, userMessage: data.message, alreadyProcessed: true };
+  }
+  
   if (data.status !== 'pending') {
     throw new Error('Conversation already processed');
   }
+
+  // 처리 중 상태로 변경 (Race condition 방지)
+  await kv.set(key, {
+    ...data,
+    status: 'processing',
+  }, { ex: 3600 });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   
@@ -190,7 +201,7 @@ export async function generateAIResponse(conversationId: string) {
     approvedAt: Date.now(),
   }, { ex: 3600 }); // 1시간 후 만료
 
-  return { reply, userMessage: data.message };
+  return { reply, userMessage: data.message, alreadyProcessed: false };
 }
 
 // POST: 새 메시지 → 큐에 저장 + 승인 요청
