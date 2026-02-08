@@ -78,11 +78,16 @@ export default function PrinciplesPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'values' | 'lessons'>('values');
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
-  const [commentForm, setCommentForm] = useState({ name: '', comment: '' });
+  const [commentForm, setCommentForm] = useState({ name: '', comment: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [comments, setComments] = useState<StoredComment[]>([]);
   const [loadingComments, setLoadingComments] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ commentId: string; name: string } | null>(null);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [editModal, setEditModal] = useState<{ commentId: string; comment: string } | null>(null);
+  const [editPassword, setEditPassword] = useState('');
+  const [editComment, setEditComment] = useState('');
 
   const selectedLessonData = lessons.find(l => l.id === selectedLesson);
 
@@ -111,8 +116,8 @@ export default function PrinciplesPage() {
   }, [selectedLesson]);
 
   const handleCommentSubmit = async () => {
-    if (!commentForm.name.trim() || !commentForm.comment.trim()) {
-      setSubmitMessage('이름과 댓글을 모두 입력해주세요.');
+    if (!commentForm.name.trim() || !commentForm.comment.trim() || !commentForm.password.trim()) {
+      setSubmitMessage('이름, 댓글, 비밀번호를 모두 입력해주세요.');
       return;
     }
 
@@ -130,6 +135,7 @@ export default function PrinciplesPage() {
         body: JSON.stringify({
           name: commentForm.name,
           comment: commentForm.comment,
+          password: commentForm.password,
           lessonId: selectedLessonData.id,
           lessonTitle: selectedLessonData.title,
         }),
@@ -139,7 +145,7 @@ export default function PrinciplesPage() {
 
       if (response.ok) {
         setSubmitMessage(data.message || '댓글이 접수되었습니다!');
-        setCommentForm({ name: '', comment: '' });
+        setCommentForm({ name: '', comment: '', password: '' });
         // 댓글 목록 새로고침
         if (selectedLessonData) {
           fetchComments(selectedLessonData.id);
@@ -152,6 +158,69 @@ export default function PrinciplesPage() {
       setSubmitMessage('댓글 전송에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // 댓글 삭제
+  const handleDeleteComment = async () => {
+    if (!deleteModal || !deletePassword) return;
+
+    try {
+      const response = await fetch(
+        `/api/comment?lessonId=${selectedLesson}&commentId=${deleteModal.commentId}&password=${encodeURIComponent(deletePassword)}`,
+        { method: 'DELETE' }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('댓글이 삭제되었습니다.');
+        setDeleteModal(null);
+        setDeletePassword('');
+        if (selectedLesson) {
+          fetchComments(selectedLesson);
+        }
+      } else {
+        alert(data.error || '댓글 삭제에 실패했습니다.');
+      }
+    } catch (error) {
+      alert('댓글 삭제에 실패했습니다.');
+    }
+  };
+
+  // 댓글 수정
+  const handleEditComment = async () => {
+    if (!editModal || !editPassword || !editComment) return;
+
+    try {
+      const response = await fetch('/api/comment', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lessonId: selectedLesson,
+          commentId: editModal.commentId,
+          password: editPassword,
+          newComment: editComment,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('댓글이 수정되었습니다.');
+        setEditModal(null);
+        setEditPassword('');
+        setEditComment('');
+        if (selectedLesson) {
+          fetchComments(selectedLesson);
+        }
+      } else {
+        alert(data.error || '댓글 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      alert('댓글 수정에 실패했습니다.');
     }
   };
 
@@ -379,7 +448,14 @@ export default function PrinciplesPage() {
                         value={commentForm.comment}
                         onChange={(e) => setCommentForm({ ...commentForm, comment: e.target.value })}
                         rows={3}
-                        className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm resize-none focus:outline-none focus:border-amber-400"
+                        className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm resize-none focus:outline-none focus:border-amber-400 mb-3"
+                      />
+                      <input
+                        type="password"
+                        placeholder="비밀번호 (수정/삭제시 필요)"
+                        value={commentForm.password}
+                        onChange={(e) => setCommentForm({ ...commentForm, password: e.target.value })}
+                        className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-amber-400"
                       />
                       <div className="flex justify-between items-center mt-3">
                         <p className="text-xs text-gray-400">
@@ -439,6 +515,23 @@ export default function PrinciplesPage() {
                                   </p>
                                 </div>
                               </div>
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => {
+                                    setEditModal({ commentId: comment.id, comment: comment.comment });
+                                    setEditComment(comment.comment);
+                                  }}
+                                  className="text-xs text-gray-400 hover:text-amber-600 transition-colors"
+                                >
+                                  수정
+                                </button>
+                                <button
+                                  onClick={() => setDeleteModal({ commentId: comment.id, name: comment.name })}
+                                  className="text-xs text-gray-400 hover:text-red-600 transition-colors"
+                                >
+                                  삭제
+                                </button>
+                              </div>
                             </div>
                             <p className="text-sm text-gray-600 whitespace-pre-wrap">{comment.comment}</p>
                           </div>
@@ -447,6 +540,123 @@ export default function PrinciplesPage() {
                     )}
                   </div>
                 </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Modal */}
+      <AnimatePresence>
+        {deleteModal && (
+          <motion.div
+            className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => {
+              setDeleteModal(null);
+              setDeletePassword('');
+            }}
+          >
+            <motion.div
+              className="bg-white rounded-xl p-6 max-w-sm w-full"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-medium text-gray-800 mb-4">댓글 삭제</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                <span className="font-medium">{deleteModal.name}</span>님의 댓글을 삭제하시겠습니까?
+              </p>
+              <input
+                type="password"
+                placeholder="비밀번호 입력"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm mb-4 focus:outline-none focus:border-amber-400"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') handleDeleteComment();
+                }}
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setDeleteModal(null);
+                    setDeletePassword('');
+                  }}
+                  className="flex-1 bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleDeleteComment}
+                  className="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors"
+                >
+                  삭제
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {editModal && (
+          <motion.div
+            className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => {
+              setEditModal(null);
+              setEditPassword('');
+              setEditComment('');
+            }}
+          >
+            <motion.div
+              className="bg-white rounded-xl p-6 max-w-sm w-full"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-medium text-gray-800 mb-4">댓글 수정</h3>
+              <textarea
+                value={editComment}
+                onChange={(e) => setEditComment(e.target.value)}
+                rows={4}
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm mb-3 resize-none focus:outline-none focus:border-amber-400"
+              />
+              <input
+                type="password"
+                placeholder="비밀번호 입력"
+                value={editPassword}
+                onChange={(e) => setEditPassword(e.target.value)}
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm mb-4 focus:outline-none focus:border-amber-400"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') handleEditComment();
+                }}
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setEditModal(null);
+                    setEditPassword('');
+                    setEditComment('');
+                  }}
+                  className="flex-1 bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleEditComment}
+                  className="flex-1 bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors"
+                >
+                  수정
+                </button>
               </div>
             </motion.div>
           </motion.div>
