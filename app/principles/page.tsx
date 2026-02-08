@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -66,6 +66,14 @@ const lessons = [
   },
 ];
 
+interface StoredComment {
+  id: string;
+  name: string;
+  comment: string;
+  timestamp: number;
+  approved: boolean;
+}
+
 export default function PrinciplesPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'values' | 'lessons'>('values');
@@ -73,8 +81,34 @@ export default function PrinciplesPage() {
   const [commentForm, setCommentForm] = useState({ name: '', comment: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  const [comments, setComments] = useState<StoredComment[]>([]);
+  const [loadingComments, setLoadingComments] = useState(false);
 
   const selectedLessonData = lessons.find(l => l.id === selectedLesson);
+
+  // 댓글 불러오기
+  const fetchComments = async (lessonId: string) => {
+    setLoadingComments(true);
+    try {
+      const response = await fetch(`/api/comment?lessonId=${lessonId}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setComments(data.comments || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch comments:', error);
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
+  // 레슨 선택 시 댓글 불러오기
+  useEffect(() => {
+    if (selectedLesson) {
+      fetchComments(selectedLesson);
+    }
+  }, [selectedLesson]);
 
   const handleCommentSubmit = async () => {
     if (!commentForm.name.trim() || !commentForm.comment.trim()) {
@@ -106,6 +140,10 @@ export default function PrinciplesPage() {
       if (response.ok) {
         setSubmitMessage(data.message || '댓글이 접수되었습니다!');
         setCommentForm({ name: '', comment: '' });
+        // 댓글 목록 새로고침
+        if (selectedLessonData) {
+          fetchComments(selectedLessonData.id);
+        }
       } else {
         setSubmitMessage(data.error || '댓글 전송에 실패했습니다.');
       }
@@ -324,7 +362,7 @@ export default function PrinciplesPage() {
                   {/* Comments Section */}
                   <div className="border-t border-gray-100 pt-8">
                     <h3 className="text-lg font-medium text-gray-800 mb-6">
-                      댓글 <span className="text-gray-400 font-normal text-sm">({selectedLessonData.comments.length})</span>
+                      댓글 <span className="text-gray-400 font-normal text-sm">({comments.length})</span>
                     </h3>
 
                     {/* Comment Form */}
@@ -369,13 +407,42 @@ export default function PrinciplesPage() {
                     </div>
 
                     {/* Comments List */}
-                    {selectedLessonData.comments.length === 0 ? (
+                    {loadingComments ? (
+                      <p className="text-center text-gray-400 py-8">
+                        댓글을 불러오는 중...
+                      </p>
+                    ) : comments.length === 0 ? (
                       <p className="text-center text-gray-400 py-8">
                         첫 번째 댓글을 남겨주세요
                       </p>
                     ) : (
                       <div className="space-y-4">
-                        {/* Comments would be rendered here */}
+                        {comments.map((comment) => (
+                          <div key={comment.id} className="bg-white rounded-lg p-4 border border-gray-100">
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                                  <span className="text-amber-600 text-sm font-medium">
+                                    {comment.name.charAt(0)}
+                                  </span>
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-800">{comment.name}</p>
+                                  <p className="text-xs text-gray-400">
+                                    {new Date(comment.timestamp).toLocaleDateString('ko-KR', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{comment.comment}</p>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
