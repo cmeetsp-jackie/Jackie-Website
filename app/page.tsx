@@ -293,24 +293,18 @@ function HomeContent() {
                   transition={{ duration: 1, delay: 0.3 }}
                 >
                   <div className="relative w-52 h-52 md:w-72 md:h-72 mx-auto">
-                    {/* 글로우 효과 */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-200 to-sky-200 blur-3xl opacity-40 animate-pulse" />
+                    {/* 글로우 효과 - 배경과 통합 */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-100/30 to-sky-100/30 blur-3xl" />
                     
-                    {/* 이미지 컨테이너 - Soft Vignette */}
-                    <div className="relative w-full h-full rounded-full overflow-hidden">
+                    {/* 이미지 컨테이너 - Gradient Mask */}
+                    <div className="relative w-full h-full">
                       <img 
                         src="/profile.png" 
                         alt="Hyesung Kim"
-                        className="w-full h-full object-cover object-top"
+                        className="w-full h-full object-cover object-top rounded-full"
                         style={{
-                          maskImage: 'radial-gradient(circle, black 50%, transparent 100%)',
-                          WebkitMaskImage: 'radial-gradient(circle, black 50%, transparent 100%)'
-                        }}
-                      />
-                      {/* Subtle inner shadow for depth */}
-                      <div className="absolute inset-0 rounded-full shadow-inner pointer-events-none" 
-                        style={{
-                          boxShadow: 'inset 0 0 60px rgba(0,0,0,0.1)'
+                          maskImage: 'radial-gradient(circle at center, black 40%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.4) 80%, transparent 100%)',
+                          WebkitMaskImage: 'radial-gradient(circle at center, black 40%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.4) 80%, transparent 100%)'
                         }}
                       />
                     </div>
