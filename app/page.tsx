@@ -503,14 +503,13 @@ function HomeContent() {
                         </p>
                       </div>
 
-                      {/* 이미지 (있을 경우) - 모바일에서 숨김 */}
+                      {/* 이미지 (있을 경우) */}
                       {chapter.images && (
-                        <div className="hidden md:flex -space-x-3 mr-8">
+                        <div className="flex -space-x-2 md:-space-x-3 mr-2 md:mr-8">
                           {chapter.images.map((img, imgIndex) => (
                             <div 
                               key={imgIndex}
-                              className="w-14 h-14 md:w-18 md:h-18 rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100"
-                              style={{ width: '4.5rem', height: '4.5rem' }}
+                              className="w-10 h-10 md:w-[4.5rem] md:h-[4.5rem] rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100"
                             >
                               <img 
                                 src={img} 
