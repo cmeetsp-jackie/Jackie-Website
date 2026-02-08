@@ -19,11 +19,17 @@ async function notifySlackAfterApproval(conversationId: string, reply: string, u
 *시간:* ${timestamp}
 *대화 ID:* \`${conversationId}\`
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 *방문자 질문:*
-> ${userMessage}
+${userMessage}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 *AI 답변 (혜성):*
-> ${reply}
+${reply}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 방문자 화면에 답변이 전달되었습니다.`;
 
@@ -36,6 +42,8 @@ async function notifySlackAfterApproval(conversationId: string, reply: string, u
       body: JSON.stringify({
         channel: slackChannel,
         text,
+        unfurl_links: false,
+        unfurl_media: false,
       }),
     });
   } catch (error) {
