@@ -116,7 +116,13 @@ const lifeEvents = [
     subtitle: '경제학과 졸',
     logo: '/journey/uchicago-logo.png',
     highlights: [],
-    memories: [],
+    memories: [
+      '/memories/uchicago/IMG_7097.jpg',
+      '/memories/uchicago/IMG_7098.jpg',
+      '/memories/uchicago/IMG_7099.jpg',
+      '/memories/uchicago/IMG_7100.jpg',
+      '/memories/uchicago/IMG_7101.jpg',
+    ],
   },
   {
     id: 'standrews',
