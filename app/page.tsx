@@ -640,23 +640,46 @@ function HomeContent() {
             <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-100">
               <div className="max-w-2xl mx-auto px-6 py-4">
                 <form 
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
                     if (!chatInput.trim()) return;
                     
+                    const userMessage = chatInput.trim();
+                    
                     // 사용자 메시지 추가
-                    setChatMessages(prev => [...prev, { role: 'user', content: chatInput }]);
+                    setChatMessages(prev => [...prev, { role: 'user', content: userMessage }]);
                     setChatInput('');
                     setIsTyping(true);
                     
-                    // 임시 응답 (나중에 실제 AI 연동)
-                    setTimeout(() => {
+                    try {
+                      // 실제 AI 응답 받기
+                      const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: userMessage }),
+                      });
+
+                      if (!response.ok) {
+                        throw new Error('Failed to get response');
+                      }
+
+                      const data = await response.json();
+                      
                       setIsTyping(false);
                       setChatMessages(prev => [...prev, { 
                         role: 'hyesung', 
-                        content: '좋은 질문이에요! 저는 항상 "일상에 불편을 주는 큰 문제를 발견하고, 뛰어난 팀과 기술로 풀어가는 것"에서 가장 큰 희열을 느낍니다. 더 궁금한 점이 있으시면 물어보세요!' 
+                        content: data.reply 
                       }]);
-                    }, 1500);
+                    } catch (error) {
+                      console.error('Chat error:', error);
+                      setIsTyping(false);
+                      setChatMessages(prev => [...prev, { 
+                        role: 'hyesung', 
+                        content: '죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.' 
+                      }]);
+                    }
                   }}
                   className="flex gap-3"
                 >
