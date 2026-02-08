@@ -201,9 +201,9 @@ export default function OriginPage() {
           </motion.div>
 
           {/* 섹션 아코디언 */}
-          <div className="space-y-4 mb-16">
+          <div className="flex flex-col gap-4 mb-16">
             {/* Family Foundation */}
-            <div>
+            <div className="order-1">
               <motion.button
                 onClick={() => setActiveSection(activeSection === 'family' ? null : 'family')}
                 className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
@@ -330,7 +330,7 @@ export default function OriginPage() {
             </div>
 
             {/* Interest & Thoughts */}
-            <div>
+            <div className="order-4 md:order-2">
               <motion.button
                 onClick={() => setActiveSection(activeSection === 'interest' ? null : 'interest')}
                 className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
@@ -521,7 +521,7 @@ export default function OriginPage() {
             </div>
 
             {/* Spiritual Compass */}
-            <div>
+            <div className="order-3">
               <motion.button
                 onClick={() => setActiveSection(activeSection === 'spiritual' ? null : 'spiritual')}
                 className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
@@ -599,7 +599,7 @@ export default function OriginPage() {
             </div>
 
             {/* Life Journey */}
-            <div>
+            <div className="order-2 md:order-4">
               <motion.button
                 onClick={() => setActiveSection(activeSection === 'journey' ? null : 'journey')}
                 className={`w-full group relative bg-white/70 hover:bg-white border rounded-xl p-6 md:p-8 transition-all duration-500 shadow-sm hover:shadow-xl text-left ${
