@@ -509,10 +509,140 @@ export default function OriginPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="text-center py-12 text-gray-400"
+                    className="space-y-8"
                   >
-                    <p className="text-4xl mb-4">💭</p>
-                    <p className="italic">콘텐츠 준비 중...</p>
+                    {/* AI 관심사 인트로 */}
+                    <div className="text-center mb-8">
+                      <p className="text-4xl mb-3">🤖</p>
+                      <h4 className="text-2xl font-light text-gray-800 mb-2">요새 내 관심사: AI</h4>
+                      <p className="text-gray-500 text-sm">인공지능이 바꾸는 일하는 방식, 그리고 제품을 만드는 방식</p>
+                    </div>
+
+                    {/* 첫 번째 관심사: 기술적 진입장벽 하락 */}
+                    <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl p-6 md:p-8 border border-blue-100">
+                      <h5 className="text-xl font-light text-gray-800 mb-4 flex items-center gap-2">
+                        <span className="text-2xl">🛠️</span>
+                        <span>1. 비개발자의 제품 만들기</span>
+                      </h5>
+                      <div className="space-y-4 text-gray-700 leading-relaxed">
+                        <p>
+                          저는 비개발자 출신입니다. 지금까지 항상 풀고 싶었던 문제는 많았으나, 기술적인 진입장벽 때문에 빠르게 실행하기 어려웠습니다.
+                        </p>
+                        <p>
+                          그런데 <strong className="text-blue-600">AI의 등장</strong>으로 인해 (특히 전 <strong className="text-blue-600">바이브코딩</strong>을 통해) 
+                          기술적인 진입장벽이 낮아져서 아이디어부터 product shipping까지의 속도가 매우 빨라졌을 뿐더러, 
+                          제가 직접 혼자 제품을 만들 수도 있는 시대가 되었음을 체감하고 있습니다.
+                        </p>
+                        <div className="bg-white/80 rounded-lg p-4 border-l-4 border-blue-400">
+                          <p className="italic text-gray-600">
+                            💡 아마 지난 3주간 주말동안 하루종일 클로드랑만 놀면서 이것저것 만들어봤던 것 같아요. 너무 재밌습니다.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 두 번째 관심사: AI Native 전환 */}
+                    <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl p-6 md:p-8 border border-amber-100">
+                      <h5 className="text-xl font-light text-gray-800 mb-4 flex items-center gap-2">
+                        <span className="text-2xl">🏢</span>
+                        <span>2. 회사의 AI Native 전환</span>
+                      </h5>
+                      <div className="space-y-6 text-gray-700 leading-relaxed">
+                        <p>
+                          회사의 대표 입장에서 회사의 <strong className="text-amber-600">AI Native 전환</strong>을 고민하고 있습니다. 
+                          어떻게 정의해야 할지, 어떻게 실행해야 할지, 이 전환은 어느 강도로 진행해야 할지... 모든 것들이 고민입니다.
+                        </p>
+
+                        {/* AI Native 정의 */}
+                        <div className="bg-white rounded-lg p-5 border border-amber-200">
+                          <h6 className="font-medium text-gray-800 mb-3 text-lg">AI Native란 무엇인가?</h6>
+                          <p className="text-gray-600 mb-4">
+                            많은 기업이 AI를 <span className="line-through text-gray-400">'도구(Tool)'</span>로 쓰지만, 
+                            우리는 AI를 <strong className="text-amber-600">'동료(Co-worker)'</strong>이자 
+                            <strong className="text-amber-600">'프로세스의 시작점(First Mover)'</strong>으로 정의합니다.
+                          </p>
+
+                          {/* AI-Assisted vs AI-Native 비교 */}
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div className="bg-gray-50 rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-lg">⏮️</span>
+                                <h6 className="font-medium text-gray-700">AI-Assisted (과거)</h6>
+                              </div>
+                              <p className="text-sm text-gray-600">
+                                사람이 기획하고, 실행하고, 결과물을 만드는데 AI가 도와준다.
+                              </p>
+                            </div>
+                            <div className="bg-gradient-to-br from-amber-100 to-amber-50 rounded-lg p-4 border-2 border-amber-300">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-lg">⏭️</span>
+                                <h6 className="font-medium text-amber-800">AI-Native (미래)</h6>
+                              </div>
+                              <p className="text-sm text-amber-900">
+                                AI가 초안을 잡고, AI가 실행하고, AI가 데이터를 분석한다. 
+                                사람은 AI가 만든 결과물의 <strong>'품질 관리자(Manager)'</strong>이자 
+                                <strong>'최종 의사결정권자'</strong>가 된다.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* MVAA 실행 원칙 */}
+                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-5 border border-purple-200">
+                          <h6 className="font-semibold text-purple-800 mb-3 text-lg">
+                            AI Native Action Principle #1: Build MVAA
+                          </h6>
+                          <p className="text-sm text-gray-500 mb-4 italic">Most Valuable AI Asset</p>
+
+                          <div className="space-y-4">
+                            {/* 원칙 */}
+                            <div>
+                              <h6 className="font-medium text-gray-800 mb-2 text-sm">📜 원칙 (Principle)</h6>
+                              <p className="text-gray-700 text-sm">
+                                실행 과정(Process)상의 모든 반복적·매뉴얼 업무는 '사람의 노동'이 아닌 
+                                <strong className="text-purple-600"> 'AI를 통한 자동화 및 효율화'</strong>를 
+                                제1의 해결책으로 삼고, 월 기준으로 계획을 세워 대체해나간다.
+                              </p>
+                            </div>
+
+                            {/* 액션플랜 */}
+                            <div>
+                              <h6 className="font-medium text-gray-800 mb-2 text-sm">🎯 액션플랜</h6>
+                              <div className="bg-white/70 rounded p-3 text-sm space-y-2">
+                                <p className="text-gray-700">
+                                  업무 비효율(반복적·매뉴얼 업무)을 AI로 개선한 모든 문제 해결 과정(Document)을 
+                                  <strong className="text-purple-600"> MVAA</strong>라 명명한다. 
+                                  이는 단순한 업무 매뉴얼을 넘어, 우리 회사의 <strong>핵심 지적 자산</strong>으로 관리한다.
+                                </p>
+                                <div className="bg-purple-100/50 rounded px-3 py-2">
+                                  <p className="text-xs text-purple-800">
+                                    <strong>필수 포함 항목:</strong> Current Bottleneck → AI 적용 방안 → Expected Output
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* 리더십 루틴 */}
+                            <div>
+                              <h6 className="font-medium text-gray-800 mb-2 text-sm">👔 리더십 루틴</h6>
+                              <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                                <li>매월 4주 차 로드맵 회의는 <strong>'MVAA 공유 세션'</strong>을 겸한다</li>
+                                <li>리더십은 각 조직에서 새롭게 발굴된 MVAA를 공유한다</li>
+                                <li>팀 내 반복업무 파악 → 우선순위/How 제시 → 시간확보 + AX팀 통한 개선</li>
+                              </ul>
+                            </div>
+
+                            {/* Henry Ford 언급 */}
+                            <div className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg p-3 border-l-4 border-gray-400">
+                              <p className="text-sm text-gray-700">
+                                <span className="text-lg mr-1">⚙️</span>
+                                이 과정에서 저의 개인 비서 역할을 하는 <strong className="text-gray-800">Henry Ford</strong>라 불리우는 봇과 함께 합니다.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </motion.div>
