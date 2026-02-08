@@ -148,24 +148,49 @@ function HomeContent() {
     setIsEntering(true);
   };
 
-  // 스크롤 감지 - 마우스 휠로 페이지 전환
+  // 스크롤 감지 - 마우스 휠 + 모바일 터치로 페이지 전환
   useEffect(() => {
-    let lastScrollY = 0;
-    let scrollTimeout: NodeJS.Timeout;
+    let touchStartY = 0;
     
+    // 마우스 휠 (데스크탑)
     const handleWheel = (e: WheelEvent) => {
-      // 스크롤 다운 (deltaY > 0) → Journey 페이지로
       if (e.deltaY > 30 && !isEntering) {
         setIsEntering(true);
       }
-      // 스크롤 업 (deltaY < 0) → 첫 페이지로
       if (e.deltaY < -30 && isEntering) {
         setIsEntering(false);
       }
     };
     
+    // 터치 시작 (모바일)
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+    
+    // 터치 끝 (모바일)
+    const handleTouchEnd = (e: TouchEvent) => {
+      const touchEndY = e.changedTouches[0].clientY;
+      const diff = touchStartY - touchEndY;
+      
+      // 스와이프 업 (50px 이상) → 다음 페이지로
+      if (diff > 50 && !isEntering) {
+        setIsEntering(true);
+      }
+      // 스와이프 다운 (50px 이상) → 이전 페이지로
+      if (diff < -50 && isEntering) {
+        setIsEntering(false);
+      }
+    };
+    
     window.addEventListener('wheel', handleWheel, { passive: true });
-    return () => window.removeEventListener('wheel', handleWheel);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
   }, [isEntering]);
 
   return (
