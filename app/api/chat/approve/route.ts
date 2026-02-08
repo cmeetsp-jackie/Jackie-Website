@@ -1,6 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIResponse } from '../route';
 
+// 슬랙으로 승인 완료 알림 보내기
+async function notifySlackAfterApproval(conversationId: string, reply: string, userMessage: string) {
+  const slackToken = process.env.SLACK_BOT_TOKEN;
+  const slackChannel = process.env.SLACK_NOTIFICATION_CHANNEL || 'D0AC44VCLCW';
+  
+  if (!slackToken) {
+    console.warn('SLACK_BOT_TOKEN not set, skipping notification');
+    return;
+  }
+
+  try {
+    const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+    
+    const text = `✅ *Talk to Hyesung - 승인 완료 & AI 답변 생성*
+
+*시간:* ${timestamp}
+*대화 ID:* \`${conversationId}\`
+
+*방문자 질문:*
+> ${userMessage}
+
+*AI 답변 (혜성):*
+> ${reply}
+
+방문자 화면에 답변이 전달되었습니다.`;
+
+    await fetch('https://slack.com/api/chat.postMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${slackToken}`,
+      },
+      body: JSON.stringify({
+        channel: slackChannel,
+        text,
+      }),
+    });
+  } catch (error) {
+    console.error('Failed to send Slack notification:', error);
+  }
+}
+
 // GET: 승인 링크 클릭 → AI 응답 생성
 export async function GET(request: NextRequest) {
   try {
@@ -31,7 +73,12 @@ export async function GET(request: NextRequest) {
 
     try {
       // AI 응답 생성
-      const reply = await generateAIResponse(conversationId);
+      const { reply, userMessage } = await generateAIResponse(conversationId);
+      
+      // 슬랙 알림 (비동기)
+      notifySlackAfterApproval(conversationId, reply, userMessage).catch(err =>
+        console.error('Slack notification failed:', err)
+      );
 
       return new NextResponse(
         `<html>

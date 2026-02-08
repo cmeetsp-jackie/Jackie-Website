@@ -190,7 +190,7 @@ export async function generateAIResponse(conversationId: string) {
     approvedAt: Date.now(),
   }, { ex: 3600 }); // 1시간 후 만료
 
-  return reply;
+  return { reply, userMessage: data.message };
 }
 
 // POST: 새 메시지 → 큐에 저장 + 승인 요청
