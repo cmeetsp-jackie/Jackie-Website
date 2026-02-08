@@ -139,6 +139,27 @@ const projects = [
           url: 'https://platum.kr/archives/252791',
           domain: 'platum.kr',
         },
+        {
+          title: '마인이스 \'차란\', 사용자가 원하는 곳을 향하다',
+          source: '파이낸셜아이',
+          date: '2024',
+          url: 'http://fi.co.kr/mobile/view.asp?SectionStr=Main&idx=81949',
+          domain: 'fi.co.kr',
+        },
+        {
+          title: '[K 스타트업 밸리] 마인이스, 포브스 선정 \'아시아 100대 유망기업\'',
+          source: 'K 스타트업 밸리',
+          date: '2024.08',
+          url: 'https://www.ksvalley.com/news/article.html?no=10031',
+          domain: 'ksvalley.com',
+        },
+        {
+          title: '[박지훈 기자의 非상장기업 원석 찾기] 마인이스 | 가품 걱정없는 패션 리셀 플랫폼 \'차란\'',
+          source: '매일경제',
+          date: '2024.06',
+          url: 'https://www.mk.co.kr/news/economy/11044631',
+          domain: 'mk.co.kr',
+        },
       ],
       memories: [
         '/memories/mineis/1.jpg',
