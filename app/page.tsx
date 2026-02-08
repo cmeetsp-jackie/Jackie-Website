@@ -227,14 +227,14 @@ function HomeContent() {
                     maxHeight: '350px',
                   }}
                   initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 0.7, scale: 1 }}
+                  animate={{ opacity: 0.5, scale: 1 }}
                   exit={{ opacity: 0, scale: 1.05 }}
                   transition={{ duration: 2, ease: 'easeInOut' }}
                 >
                   <img 
                     src={imgSrc}
                     alt="Innovation"
-                    className="max-w-full max-h-full w-auto h-auto"
+                    className="max-w-full max-h-full w-auto h-auto opacity-30 md:opacity-100"
                     style={{ filter: 'grayscale(100%)' }}
                   />
                 </motion.div>
@@ -314,9 +314,9 @@ function HomeContent() {
                   </div>
                 </motion.div>
 
-                {/* 이름 */}
+                {/* 이름 - 모바일에서 배경 추가 */}
                 <motion.h1
-                  className="text-5xl md:text-8xl font-extralight tracking-[0.2em] text-gray-800 mb-2"
+                  className="text-5xl md:text-8xl font-extralight tracking-[0.2em] text-gray-800 mb-2 px-4 py-2 md:px-0 md:py-0 bg-white/70 md:bg-transparent rounded-xl md:rounded-none backdrop-blur-sm md:backdrop-blur-none"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.5 }}
@@ -326,7 +326,7 @@ function HomeContent() {
 
                 {/* 영어 이름 */}
                 <motion.p
-                  className="text-2xl md:text-3xl text-gray-500 font-extralight tracking-[0.15em] mb-6"
+                  className="text-2xl md:text-3xl text-gray-500 font-extralight tracking-[0.15em] mb-6 px-4 py-1 md:px-0 md:py-0 bg-white/70 md:bg-transparent rounded-lg md:rounded-none backdrop-blur-sm md:backdrop-blur-none inline-block"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.6 }}
@@ -336,7 +336,7 @@ function HomeContent() {
 
                 {/* 부제 */}
                 <motion.p
-                  className="text-lg md:text-xl text-gray-500 tracking-[0.3em] uppercase font-light mb-12"
+                  className="text-lg md:text-xl text-gray-500 tracking-[0.3em] uppercase font-light mb-12 px-4 py-2 md:px-0 md:py-0 bg-white/70 md:bg-transparent rounded-lg md:rounded-none backdrop-blur-sm md:backdrop-blur-none"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.8 }}
