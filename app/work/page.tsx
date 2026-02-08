@@ -89,6 +89,57 @@ const projects = [
           description: '혼자서는 세상을 바꿀 수 없지만, 팀으로는 위대한 변화를 만들어낼 수 있습니다.',
         },
       ],
+      pressReleases: [
+        {
+          title: '차란마켓 출시 - 품질보증형 P2P 중고 패션',
+          source: '패션비즈',
+          date: '2026.01',
+          url: 'https://fashionbiz.co.kr/article/222646',
+          thumbnail: '/press/fashionbiz.png',
+        },
+        {
+          title: '시리즈 B 투자 유치 - Altos Ventures 리드',
+          source: '플래텀',
+          date: '2025.09',
+          url: 'https://platum.kr/archives/270926',
+          thumbnail: '/press/platum.png',
+        },
+        {
+          title: '누적 투자 330억원 돌파 - 차세대 유니콘 후보',
+          source: '유니콘팩토리',
+          date: '2025.03',
+          url: 'https://www.unicornfactory.co.kr/article/2025030610183022727',
+          thumbnail: '/press/unicornfactory.png',
+        },
+        {
+          title: '토스페이먼츠 파트너사 인터뷰',
+          source: 'Toss Blog',
+          date: '2025',
+          url: 'https://pay.toss.im/blog/charan/',
+          thumbnail: '/press/toss.png',
+        },
+        {
+          title: '차란, 가입자 100만명 돌파',
+          source: '서울경제',
+          date: '2025.01',
+          url: 'https://m.sedaily.com/article/14152859',
+          thumbnail: '/press/sedaily.png',
+        },
+        {
+          title: 'AI 기반 검수로 중고거래 신뢰도 향상',
+          source: '조선일보',
+          date: '2025.01',
+          url: 'https://www.chosun.com/economy/smb-venture/2025/01/14/HR2TXVSLEJARXN5PECZI6SRKQY/',
+          thumbnail: '/press/chosun.png',
+        },
+        {
+          title: '시리즈 A 투자 유치 - Hashed 리드',
+          source: '플래텀',
+          date: '2024.03',
+          url: 'https://platum.kr/archives/252791',
+          thumbnail: '/press/platum.png',
+        },
+      ],
       memories: [
         '/memories/mineis/1.jpg',
         '/memories/mineis/2.jpg',
@@ -544,6 +595,58 @@ export default function WorkPage() {
                             ✦
                           </div>
                         </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Press Release */}
+                {project.details.pressReleases && project.details.pressReleases.length > 0 && (
+                  <div>
+                    <h3 className="text-sm uppercase tracking-wider text-amber-600 mb-4">Press Release</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {project.details.pressReleases.map((article, idx) => (
+                        <a
+                          key={idx}
+                          href={article.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group bg-white border border-gray-100 rounded-xl p-4 hover:border-amber-200 hover:shadow-lg transition-all duration-300"
+                        >
+                          <div className="flex gap-4">
+                            {/* 썸네일 */}
+                            <div className="flex-shrink-0 w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center border border-gray-100">
+                              <img 
+                                src={article.thumbnail}
+                                alt={article.source}
+                                className="w-full h-full object-contain p-2"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  const parent = target.parentElement;
+                                  if (parent) {
+                                    parent.innerHTML = `<span class="text-gray-400 text-xs font-medium">${article.source}</span>`;
+                                  }
+                                }}
+                              />
+                            </div>
+                            
+                            {/* 내용 */}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs text-amber-600 mb-1">{article.source} • {article.date}</p>
+                              <h4 className="text-sm md:text-base text-gray-800 font-medium mb-1 line-clamp-2 group-hover:text-amber-600 transition-colors">
+                                {article.title}
+                              </h4>
+                            </div>
+                            
+                            {/* 화살표 */}
+                            <div className="flex-shrink-0 text-gray-300 group-hover:text-amber-500 transition-colors">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </div>
+                          </div>
+                        </a>
                       ))}
                     </div>
                   </div>
