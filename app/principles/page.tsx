@@ -39,6 +39,13 @@ const coreValues = [
 // Lessons & Records
 const lessons = [
   {
+    id: 'first-three-months',
+    title: '제품 출시 직후 3달의 기억',
+    date: '2026.03.01',
+    content: '',
+    comments: [],
+  },
+  {
     id: 'pre-product-stage',
     title: 'Pre-product 단계의 힘듬?낭만?매력?',
     date: '2026.02.08',
