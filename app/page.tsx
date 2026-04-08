@@ -385,12 +385,17 @@ function HomeContent() {
                 {/* JOURNEY 버튼 - 정갈하게 */}
                 <motion.button
                   onClick={() => setShowChapters(true)}
-                  className="inline-block text-xl md:text-3xl tracking-[0.2em] md:tracking-[0.3em] uppercase font-light text-gray-600 hover:text-amber-600 active:text-amber-600 transition-colors duration-300 mb-12 md:mb-20 border-b border-gray-300 hover:border-amber-500 pb-2 bg-transparent cursor-pointer min-h-[44px]"
+                  className="group inline-flex items-center gap-3 md:gap-4 bg-gray-900 hover:bg-amber-500 active:bg-amber-500 text-white text-base md:text-xl tracking-[0.2em] md:tracking-[0.25em] uppercase font-light transition-all duration-300 mb-12 md:mb-20 px-8 md:px-12 py-4 md:py-5 rounded-full shadow-lg hover:shadow-amber-200/60 hover:shadow-2xl cursor-pointer min-h-[52px]"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.6 }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                 >
                   The Journey
+                  <svg className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </motion.button>
 
                 {/* 소셜 링크 */}
